@@ -1,3 +1,5 @@
+import java.io.File
+
 data class Policy(val min: Int, val max: Int, var char: Char) {
     fun admitsByOldRules(password: String): Boolean {
         return password.count { it == char } in min..max
@@ -12,7 +14,7 @@ val linePattern = Regex("^(\\d+)-(\\d+)\\s+(\\w):\\s*(\\w+)$")
 
 // ---
 
-val input = args.map {
+val input = File(args[0]).readLines().map {
     val match = linePattern.matchEntire(it)
             ?: throw IllegalArgumentException("invalid line '${it}'")
 
@@ -26,5 +28,3 @@ val input = args.map {
 
 println(input.filter { it.first.admitsByOldRules(it.second) }.size)
 println(input.filter { it.first.admitsByNewRules(it.second) }.size)
-
-// --> kscript 02.kts $(cat 02_input)

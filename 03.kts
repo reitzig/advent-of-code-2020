@@ -1,5 +1,7 @@
-val map = args
-val mapWidth = args[0].length
+import java.io.File
+
+val map = File(args[0]).readLines()
+val mapWidth = map[0].length
 assert(args[0][0] == '.')
 assert(args.all { it.length == mapWidth })
 
@@ -8,7 +10,7 @@ assert(args.all { it.length == mapWidth })
 //        .mapIndexed { rowIndex, row -> row[(rowIndex * 3) % mapWidth]}
 //        .count { it == '#' }
 
-fun metTrees(map: Array<String>, shiftRight: Int, shiftDown: Int): Long {
+fun metTrees(map: List<String>, shiftRight: Int, shiftDown: Int): Long {
     var trees = 0L
     for ( rowIndex in 0..map.lastIndex step shiftDown ) {
         val nextSquare = map[rowIndex][(rowIndex / shiftDown * shiftRight) % mapWidth];
@@ -28,5 +30,3 @@ println(
             .map { metTrees(map, it.first, it.second) }
             .reduce(Long::times)
 )
-
-// --> kscript 03.kts $(cat 03_input)

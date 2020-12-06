@@ -1,3 +1,4 @@
+import java.io.File
 import _04.Fields.*
 
 enum class Fields(val key: String) {
@@ -63,7 +64,7 @@ data class Passport(val values: Map<Fields, String>) {
                     && values.all { it.key.admits(it.value) }
 }
 
-fun <T> Array<T>.split(splitEntry: T): List<List<T>> =
+fun <T> List<T>.split(splitEntry: T): List<List<T>> =
         this.fold(mutableListOf(mutableListOf<T>())) { acc, line ->
             if (line == splitEntry) {
                 acc.add(mutableListOf())
@@ -73,7 +74,10 @@ fun <T> Array<T>.split(splitEntry: T): List<List<T>> =
             return@fold acc
         }
 
-val passports = args.split("")
+// ---
+
+val input = File(args[0]).readLines()
+val passports = input.split("")
         .map { it.flatMap { it.split("\\s+".toRegex()) } }
         .map {
             it.map {
@@ -90,4 +94,10 @@ println(passports.count { it.hasNecessaryFields })
 // Part 2:
 println(passports.count { it.isValid })
 
-// --> kscript 04.kts $(cat 04_input)
+// For AEK debugging:
+//println(passports.mapIndexedNotNull { index, passport ->
+//    if ( passport.isValid ) {
+//        index
+//    } else {
+//        null
+//    }}.joinToString(","))
