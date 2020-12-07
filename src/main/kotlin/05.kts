@@ -25,6 +25,6 @@ fun mySeatId(otherTicketCodes: List<String>): Int {
 
 val input = File(args[0]).readLines()
 // Part 1:
-println(input.map(::seatIdOf).max())
+println(input.map(::seatIdOf).maxOrNull())
 // Part 2:
 println(mySeatId(input))

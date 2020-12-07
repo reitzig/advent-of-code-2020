@@ -13,10 +13,10 @@ fun <T> List<T>.split(splitEntry: T): List<List<T>> =
 
 // ---
 
-inline fun indexOf(c: Char): Int = c.toInt() - 97;
+fun indexOf(c: Char): Int = c.toInt() - 97;
 
-inline fun parikhOf(s: String): UInt {
-    var parikh = CharArray(26) { i -> '0' }
+fun parikhOf(s: String): UInt {
+    val parikh = CharArray(26) { i -> '0' }
     s.forEach { parikh[indexOf(it)] = '1' }
     return parikh.concatToString().toUInt(radix = 2)
 }

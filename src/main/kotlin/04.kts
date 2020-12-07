@@ -44,12 +44,12 @@ enum class Fields(val key: String) {
         override fun admits(value: String): Boolean = true
     };
 
-    abstract fun admits(value: String): Boolean;
+    abstract fun admits(value: String): Boolean
 
     companion object {
         fun valueOfKey(key: String): Fields {
-            return values().filter { it.key == key }.firstOrNull()
-                    ?: throw IllegalArgumentException("No Field with key ${key}")
+            return values().firstOrNull { it.key == key }
+                    ?: throw IllegalArgumentException("No Field with key $key")
         }
     }
 }

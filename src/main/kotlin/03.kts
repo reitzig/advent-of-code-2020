@@ -13,7 +13,7 @@ assert(args.all { it.length == mapWidth })
 fun metTrees(map: List<String>, shiftRight: Int, shiftDown: Int): Long {
     var trees = 0L
     for ( rowIndex in 0..map.lastIndex step shiftDown ) {
-        val nextSquare = map[rowIndex][(rowIndex / shiftDown * shiftRight) % mapWidth];
+        val nextSquare = map[rowIndex][(rowIndex / shiftDown * shiftRight) % mapWidth]
         if ( nextSquare == '#' ) {
             trees += 1
         }

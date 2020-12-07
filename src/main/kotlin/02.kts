@@ -14,9 +14,9 @@ val linePattern = Regex("^(\\d+)-(\\d+)\\s+(\\w):\\s*(\\w+)$")
 
 // ---
 
-val input = File(args[0]).readLines().map {
-    val match = linePattern.matchEntire(it)
-            ?: throw IllegalArgumentException("invalid line '${it}'")
+val input = File(args[0]).readLines().map { line ->
+    val match = linePattern.matchEntire(line)
+            ?: throw IllegalArgumentException("invalid line '${line}'")
 
     match.groupValues.let {
         assert(it[3].length == 1)

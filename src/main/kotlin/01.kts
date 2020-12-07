@@ -21,8 +21,8 @@ fun matchingPair(entries: List<Int>, target: Int): Pair<Int, Int>? {
 fun matchingTriplet(entries: List<Int>, target: Int): Triple<Int, Int, Int>? {
     return entries.mapIndexed { index, entry ->
         // ^_^
-        var matchingPair = matchingPair(
-                entries.filterIndexed { i, e -> i != index },
+        val matchingPair = matchingPair(
+                entries.filterIndexed { i, _ -> i != index },
                 target - entry)
 
         if ( matchingPair != null ) {
