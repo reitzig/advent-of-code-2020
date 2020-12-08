@@ -1,11 +1,13 @@
-import java.io.File
+//INCLUDE shared.kt
+
 import _04.Fields.*
+import java.io.File
 
 enum class Fields(val key: String) {
     BirthYear("byr") {
         override fun admits(value: String): Boolean =
-                value.matches(Regex("^\\d{4}$"))
-                        && value.toInt() in 1920..2002
+            value.matches(Regex("^\\d{4}$"))
+                    && value.toInt() in 1920..2002
     },
     IssueYear("iyr"){
         override fun admits(value: String): Boolean =
@@ -63,16 +65,6 @@ data class Passport(val values: Map<Fields, String>) {
             hasNecessaryFields
                     && values.all { it.key.admits(it.value) }
 }
-
-fun <T> List<T>.split(splitEntry: T): List<List<T>> =
-        this.fold(mutableListOf(mutableListOf<T>())) { acc, line ->
-            if (line == splitEntry) {
-                acc.add(mutableListOf())
-            } else {
-                acc.last().add(line)
-            }
-            return@fold acc
-        }
 
 // ---
 
