@@ -1,3 +1,5 @@
+import kotlin.math.absoluteValue
+
 fun <T> List<T>.split(splitEntry: T): List<List<T>> =
     this.fold(mutableListOf(mutableListOf<T>())) { acc, line ->
         if (line == splitEntry) {
@@ -16,6 +18,13 @@ fun <T> List<T>.combinations(): List<Pair<T, T>> =
 
 operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>): Pair<Int, Int> =
     Pair(first + other.first, second + other.second)
+
+operator fun Pair<Int, Int>.times(factor: Int): Pair<Int, Int> =
+    Pair(first * factor, second * factor)
+
+fun Pair<Int, Int>.manhattanFrom(origin: Pair<Int, Int> = Pair(0, 0)): Int =
+    (origin.first - this.first).absoluteValue +
+            (origin.second - this.second).absoluteValue
 
 //fun Pair<Int, Int>.projectRay(): Sequence<Pair<Int, Int>> =
 //    generateSequence(this) { it + this }
