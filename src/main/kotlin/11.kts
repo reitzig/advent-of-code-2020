@@ -1,9 +1,8 @@
-//INCLUDE shared.kt
+@file:Include("shared.kt")
 
+//import _11.GridElement.EmptySeat // TODO why doesn't this work?
 import _11.Position
 import java.io.File
-
-// TODO: can't import _11.GridElement.EmptySeat -- why?
 
 enum class GridElement(val rep: Char) {
     EmptySeat('L'),

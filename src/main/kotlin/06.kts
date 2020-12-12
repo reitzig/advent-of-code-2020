@@ -1,4 +1,4 @@
-//INCLUDE shared.kt
+@file:Include("shared.kt")
 
 import java.io.File
 

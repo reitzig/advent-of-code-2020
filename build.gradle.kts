@@ -6,9 +6,11 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("script-runtime"))
+    implementation("com.github.holgerbrandl", "kscript-annotations", "1.2")
 }
 repositories {
     mavenCentral()
+    jcenter()
 }
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {

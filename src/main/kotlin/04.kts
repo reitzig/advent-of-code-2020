@@ -1,4 +1,4 @@
-//INCLUDE shared.kt
+@file:Include("shared.kt")
 
 import _04.Fields.*
 import java.io.File
