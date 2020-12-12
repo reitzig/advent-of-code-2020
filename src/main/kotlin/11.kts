@@ -1,6 +1,6 @@
 @file:Include("shared.kt")
 
-//import _11.GridElement.EmptySeat // TODO why doesn't this work?
+import _11.GridElement.*
 import _11.Position
 import java.io.File
 
@@ -20,7 +20,7 @@ typealias Position = Pair<Int, Int>
 
 data class Seating(val grid: List<List<GridElement>>) {
     val occupiedSeats: Int =
-        grid.map { row -> row.count { it == GridElement.OccupiedSeat } }.sum()
+        grid.map { row -> row.count { it == OccupiedSeat } }.sum()
 
     fun occupiedNeighbours(position: Position): Int =
         listOf(-1, 0, 1)
@@ -31,7 +31,7 @@ data class Seating(val grid: List<List<GridElement>>) {
                 it.first in 0..grid.lastIndex
                         && it.second in 0..grid[position.first].lastIndex
             }
-            .count { grid[it.first][it.second] == GridElement.OccupiedSeat }
+            .count { grid[it.first][it.second] == OccupiedSeat }
 
     fun occupiedVisibles(position: Position): Int =
         listOf(-1, 0, 1)
@@ -44,17 +44,17 @@ data class Seating(val grid: List<List<GridElement>>) {
                         first in 0..grid.lastIndex && second in 0..grid[position.first].lastIndex
                     }
                     .filter { it != position }
-                    .firstOrNull { grid[it.first][it.second] != GridElement.Floor }
+                    .firstOrNull { grid[it.first][it.second] != Floor }
             }
-            .count { grid[it.first][it.second] == GridElement.OccupiedSeat }
+            .count { grid[it.first][it.second] == OccupiedSeat }
 
     fun blink(willSitDown: (Position) -> Boolean, willGetUp: (Position) -> Boolean) =
         grid.mapIndexed { rowIndex, row ->
             row.mapIndexed { colIndex, it ->
-                if (it == GridElement.EmptySeat && willSitDown(Position(rowIndex, colIndex))) {
-                    GridElement.OccupiedSeat
-                } else if (it == GridElement.OccupiedSeat && willGetUp(Position(rowIndex, colIndex))) {
-                    GridElement.EmptySeat
+                if (it == EmptySeat && willSitDown(Position(rowIndex, colIndex))) {
+                    OccupiedSeat
+                } else if (it == OccupiedSeat && willGetUp(Position(rowIndex, colIndex))) {
+                    EmptySeat
                 } else {
                     it
                 }
