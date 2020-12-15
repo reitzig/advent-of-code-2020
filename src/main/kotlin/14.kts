@@ -6,9 +6,7 @@ sealed class Instruction {
             instruction.value.toString(2)
                 .padStart(mask.length, '0')
                 .zip(mask)
-                .map {
-                    val valueBit = it.first
-                    val maskBit = it.second
+                .map { (valueBit, maskBit) ->
                     when (maskBit) {
                         'X' -> valueBit
                         else -> maskBit
@@ -22,9 +20,7 @@ sealed class Instruction {
             instruction.address.toString(2)
                 .padStart(mask.length, '0')
                 .zip(mask)
-                .map {
-                    val valueBit = it.first
-                    val maskBit = it.second
+                .map { (valueBit, maskBit) ->
                     when (maskBit) {
                         '0' -> listOf(valueBit)
                         '1' -> listOf('1')
