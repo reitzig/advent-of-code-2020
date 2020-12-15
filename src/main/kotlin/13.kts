@@ -78,7 +78,6 @@ busLines
         generateSequence(baseAndProduct.first) { it + baseAndProduct.second } // xi + k * n1 * ... * ni
             .first { candidate -> (candidate + line.contestOffset) % line.frequency == 0L }
             .let { Pair(it, baseAndProduct.second * line.frequency) }
-            .let { println(it); it }
-        // --> first component is smallest solution for first i bus lines
+            // --> first component is smallest solution for first i bus lines
     }
     .let { println(it.first) }
