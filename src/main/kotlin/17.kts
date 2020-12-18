@@ -17,26 +17,38 @@ interface Position<Self : Position<Self>> {
     val neighbours: Sequence<Self>
 }
 
+// Would have liked this refactoring to not re-compute neighbours all the time,
+// but alas: https://youtrack.jetbrains.com/issue/KT-43995
 data class Position3(val x: Int, val y: Int, val z: Int) : Position<Position3> {
-    override val neighbours: Sequence<Position3>
-        get() = listOf(-1, 0, 1)
-            .combinations(3)
-            .asSequence()
-            .filterNot { l -> l.all { it == 0 } }
+    override val neighbours: Sequence<Position3> by lazy {
+        neighbourOffsets
             .map { (dx, dy, dz) ->
                 Position3(x + dx, y + dy, z + dz)
             }
+    }
+
+    companion object {
+        private val neighbourOffsets = listOf(-1, 0, 1)
+            .combinations(3)
+            .asSequence()
+            .filterNot { l -> l.all { it == 0 } }
+    }
 }
 
 data class Position4(val x: Int, val y: Int, val z: Int, val zz: Int) : Position<Position4> {
-    override val neighbours: Sequence<Position4>
-        get() = listOf(-1, 0, 1)
-            .combinations(4)
-            .asSequence()
-            .filterNot { l -> l.all { it == 0 } }
+    override val neighbours: Sequence<Position4> by lazy {
+        neighbourOffsets
             .map { (dx, dy, dz, dzz) ->
                 Position4(x + dx, y + dy, z + dz, zz + dzz)
             }
+    }
+
+    companion object {
+        private val neighbourOffsets = listOf(-1, 0, 1)
+            .combinations(4)
+            .asSequence()
+            .filterNot { l -> l.all { it == 0 } }
+    }
 }
 
 data class PocketDimension<P : Position<P>>(var grid: MutableMap<P, GridElement>) {
