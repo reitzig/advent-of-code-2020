@@ -1,13 +1,7 @@
 @file:KotlinOpts("-J-ea")
-//@file:Include("shared.kt")
+@file:Include("shared.kt")
 
 import java.io.File
-
-data class Either<T, U>(val t: T? = null, val u: U? = null) {
-    init {
-        assert((t == null) != (u == null)) { "Exactly one parameter must be null" }
-    }
-}
 
 sealed class Expression {
     data class Times(val leftFactor: Expression, val rightFactor: Expression) : Expression() {

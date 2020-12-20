@@ -1,5 +1,13 @@
 import kotlin.math.absoluteValue
 
+data class Either<T, U>(val t: T? = null, val u: U? = null) {
+    init {
+        assert((t == null) != (u == null)) { "Exactly one parameter must be null" }
+    }
+
+    override fun toString(): String = "${t ?: ""}${u ?: ""}"
+}
+
 fun <T> List<T>.split(splitEntry: T): List<List<T>> =
     this.fold(mutableListOf(mutableListOf<T>())) { acc, line ->
         if (line == splitEntry) {
