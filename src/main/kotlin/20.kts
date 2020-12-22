@@ -123,6 +123,7 @@ data class OrientedImageTile(val originalId: Int, val pixels: PixelMap) {
         }
 }
 
+// Input:
 val tiles = File(args[0]).readLines()
     .split("")
     .map { ImageTile(it) }

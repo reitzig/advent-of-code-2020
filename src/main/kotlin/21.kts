@@ -17,6 +17,7 @@ data class Food(val ingredients: List<Ingredient>, val allergens: List<Allergen>
     }
 }
 
+// Input:
 val foods = File(args[0]).readLines()
     .map { Food(it) }
 val ingredients = foods.flatMap { it.ingredients }.distinct().sorted() as List<Ingredient>

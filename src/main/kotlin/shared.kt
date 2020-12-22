@@ -54,6 +54,12 @@ fun <T> List<T>.combinations(times: Int): List<List<T>> =
         }
     }
 
+fun <T : Comparable<T>> List<T>.indexOfMaxOrNull(): Int? =
+    mapIndexed { i, e -> Pair(i, e) }.maxByOrNull { it.second }?.first
+
+fun <T, R : Comparable<R>> List<T>.indexOfMaxByOrNull(selector: (T) -> R): Int? =
+    mapIndexed { i, e -> Pair(i, selector(e)) }.maxByOrNull { it.second }?.first
+
 fun <S, T, U> Pair<S, Pair<T, U>>.flatten(): Triple<S, T, U> =
     Triple(this.first, this.second.first, this.second.second)
 
