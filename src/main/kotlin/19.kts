@@ -125,6 +125,10 @@ fun (Rules).customMatches(message: String): Boolean {
     val rule42 = Regex("^${toRegex(42)}")
     val rule31 = Regex("^${toRegex(31)}")
 
+    // NB: This works by sheer luck only. Depending on rules and input,
+    //     whichever matching this eager loop finds may or may not turn out
+    //     to be the right choice. (Roughly speaking, rule42 and rule31 both
+    //     have to represent prefix(-free) codes.
     fun consumePrefixesMatching(pattern: Regex, text: String): Pair<Int, String> {
         var matches = 0
         var oldText = text

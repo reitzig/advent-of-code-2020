@@ -18,6 +18,27 @@ fun <T> List<T>.split(splitEntry: T): List<List<T>> =
         return@fold acc
     }
 
+fun <T> List<T>.replace(index: Int, newElement: T): List<T> =
+    mapIndexed { i, elem ->
+        if (i == index) {
+            newElement
+        } else {
+            elem
+        }
+    }
+
+fun <T> List<T>.replace(index: Int, replacer: (T) -> T): List<T> =
+    mapIndexed { i, elem ->
+        if (i == index) {
+            replacer(elem)
+        } else {
+            elem
+        }
+    }
+
+fun <T> List<List<T>>.replace(index: Pair<Int, Int>, newElement: T): List<List<T>> =
+    replace(index.first) { it.replace(index.second, newElement) }
+
 fun <T, U> List<T>.combinationsWith(other: List<U>): List<Pair<T, U>> =
     flatMap { left -> other.map { right -> Pair(left, right) } }
 
