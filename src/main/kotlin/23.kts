@@ -1,49 +1,88 @@
 @file:KotlinOpts("-J-ea")
-@file:Include("shared.kt")
 
 import java.io.File
 
-typealias Cup = Int
+// Let's build a linked circle!
+// Rationale: Performing the arrangements and lookups necessary to take a turn
+//            is inefficient using either ArrayList or LinkedList from the std lib.
+//            As the operations are otherwise trivial, flying our own seems feasible.
+//            Cheat: CupsGame maintains an index value->Cup to avoid linear scans.
 
-data class Cups(val circle: MutableList<Cup>) {
-    constructor(circleString: String) : this(circleString.map { "$it".toInt() as Cup }.toMutableList())
+data class Cup(val value: Int, var nextInCircle: Cup? = null) {
+    override fun toString(): String {
+        return "Cup($value, ->${nextInCircle?.value})"
+    }
+}
 
-    private val maxCupValue = circle.maxOrNull()!!
-    private val circleSize = circle.size // avoid concurrent modification
+class CupsGame(cupValues: Sequence<Int>) {
+    private var currentCup: Cup
 
-    fun crabify(): MutableList<Cup> =
-        circle.toMutableList()
-            .also { it.addAll(((circle.maxOrNull()!! + 1)..1_000_000)) }
+    /**
+     * Maps value to element in linked circle!
+     */
+    private val cupIndex: Map<Int, Cup>
+    private val maxCupValue = cupValues.maxOrNull()!!
+
+    init {
+        val cups = cupValues.map { Cup(it) }.toList()
+        cups.zipWithNext { a, b -> a.nextInCircle = b }
+        cups.last().nextInCircle = cups.first()
+        currentCup = cups.first()
+        assert(cups.all { it.nextInCircle != null }) { "Gap in the circle!" }
+
+        cupIndex = cups.map { Pair(it.value, it) }.toMap()
+    }
+
+    val circleSize: Int
+        get() = cupIndex.size
 
     fun takeTurn() {
 //        println("cups: $this")
-        val current = circle.first()
-        val pickedUp = circle.removeAllAt(1..3)
-//        println("picked up: $pickedUp")
-        val destinationIndex =
-            ((current - 1 downTo 1).asSequence() + (maxCupValue downTo current + 1).asSequence())
-                .firstOrNull { !pickedUp.contains(it) }
-                ?.let { circle.indexOf(it) }
+        val pickedUp = asSequence(currentCup).drop(1).take(3).toList()
+        val pickedUpValues = pickedUp.map { it.value }
+//        println("picked up: $pickedUpValues")
+        val destinationCup =
+            ((currentCup.value - 1 downTo 1).asSequence() + (maxCupValue downTo currentCup.value + 1).asSequence())
+                .firstOrNull { !pickedUpValues.contains(it) }
+                ?.let { cupIndex[it]!! }
                 ?: throw IllegalStateException("All cups picked?")
-        circle.addAll(destinationIndex + 1, pickedUp)
-        circle.rotateLeft(1)
+//        println("destination: ${destinationCup.value}")
+
+        // Rewire:
+        //      currentCup -> [pickedUp] -> A   ...  destinationCup -> B
+        // -->  currentCup -> A                 ... destinationCup -> [pickedUp] -> B
+        currentCup.nextInCircle = pickedUp.last().nextInCircle
+        val tmpB = destinationCup.nextInCircle!!
+        destinationCup.nextInCircle = pickedUp.first()
+        pickedUp.last().nextInCircle = tmpB
+
+        // And prepare for next turn:
+        currentCup = currentCup.nextInCircle!!
     }
 
+    fun asSequence(startingCup: Cup = currentCup) =
+        generateSequence(startingCup) { lastCup -> lastCup.nextInCircle.takeIf { it != startingCup } }
+
     fun toAnswer(): String =
-        circle.indexOf(1).let { startIndex ->
-            (circle.subList(startIndex, circle.size) + circle.subList(0, startIndex))
-                .drop(1)
-                .joinToString("")
-        }
+        cupIndex[1]?.let { cup1 ->
+            asSequence(cup1).drop(1).joinToString("") { "${it.value}" }
+        } ?: throw IllegalStateException("We lost cup 1!")
 
     fun cupsWithStars(): List<Cup> =
-        circle.indexOf(1).let { listOf((it + 1) % circleSize, (it + 2) % circleSize) }
+        cupIndex[1]?.let { cup1 ->
+            asSequence(cup1).drop(1).take(2).toList()
+        } ?: throw IllegalStateException("We lost cup 1!")
 
     override fun toString(): String =
-        circle.mapIndexed { i, c -> if (i == 0) "($c)" else c }.joinToString(" ")
+        asSequence()
+            .map { if (it == currentCup) "(${it.value})" else it.value }
+            .joinToString(" ")
 }
 
-fun play(startingArrangement: Cups, rounds: Int = 100) {
+fun crabify(cupValues: Sequence<Int>): Sequence<Int> =
+    cupValues + ((cupValues.maxOrNull()!! + 1)..1_000_000).asSequence()
+
+fun play(startingArrangement: CupsGame, rounds: Int = 100) {
     for (round in 1..rounds) {
 //        println("-- move $round --")
         startingArrangement.takeTurn()
@@ -57,20 +96,22 @@ fun play(startingArrangement: Cups, rounds: Int = 100) {
 }
 
 // Input:
-val cups = Cups(File(args[0]).readText().trim())
+val cupValues = File(args[0]).readText().trim().map { "$it".toInt() }.asSequence()
 
 // Part 1:
-with(cups.copy()) {
+with(CupsGame(cupValues)) {
     play(this, 100)
     println(toAnswer())
 }
 
 // Part 2:
-with(Cups(cups.crabify())) {
-    assert(circle.size == 1_000_000) { "wrong number of cups: ${circle.size}" }
-    assert(circle.distinct().size == 1_000_000) { "duplicate numbers!" }
+with(CupsGame(crabify(cupValues))) {
+    assert(circleSize == 1_000_000) { "wrong number of cups: $circleSize" }
+    assert(asSequence().map { it.value }.distinct().count() == 1_000_000) { "duplicate numbers!" }
     play(this, 10_000_000)
-    println(cupsWithStars().also { println(it) }.map(Int::toLong).reduce(Long::times))
+    cupsWithStars()
+//        .also { println(it) }
+        .map { it.value.toLong() }
+        .reduce(Long::times)
+        .also { println(it) }
 }
-
-// 1000 -
