@@ -39,6 +39,18 @@ fun <T> List<T>.replace(index: Int, replacer: (T) -> T): List<T> =
 fun <T> List<List<T>>.replace(index: Pair<Int, Int>, newElement: T): List<List<T>> =
     replace(index.first) { it.replace(index.second, newElement) }
 
+fun <T> (MutableList<T>).removeAllAt(indices: IntRange): List<T> {
+    val result = this.subList(indices.first, indices.last + 1).toList()
+    indices.forEach { _ -> removeAt(indices.first) }
+    return result
+}
+
+fun <T> (MutableList<T>).rotateLeft(by: Int) {
+    for (i in 1..(by % size)) {
+        add(removeAt(0))
+    }
+}
+
 fun <T, U> List<T>.combinationsWith(other: List<U>): List<Pair<T, U>> =
     flatMap { left -> other.map { right -> Pair(left, right) } }
 
