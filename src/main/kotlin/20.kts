@@ -272,7 +272,3 @@ val seaMonsterPattern = seaMonster
 val mapWithMonsters = fullImage.blotGroupsOfAllMatches(seaMonsterPattern)
 println(ImageTile(-2, mapWithMonsters))
 println(mapWithMonsters.map { row -> row.count { it == Pixel.Up } }.sum())
-
-// 1300 - 1600
-// 2350 - 0010
-// 1010 - 1045

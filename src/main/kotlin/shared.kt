@@ -96,3 +96,14 @@ fun Pair<Int, Int>.projectRay(
     isInBounds: (Pair<Int, Int>).() -> Boolean = { true }
 ): Sequence<Pair<Int, Int>> =
     generateSequence(this) { (it + direction).takeIf(isInBounds) }
+
+data class Quadruple<out A, out B, out C, out D>(
+    public val first: A,
+    public val second: B,
+    public val third: C,
+    public val fourth: D
+) {
+    override fun toString(): String = "($first, $second, $third, $fourth)"
+}
+
+fun <T> Quadruple<T, T, T, T>.toList(): List<T> = listOf(first, second, third, fourth)
